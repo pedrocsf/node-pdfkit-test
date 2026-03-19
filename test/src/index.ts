@@ -176,9 +176,9 @@ async function generatePdf() {
   data.forEach((row, index) => {
     doc.rect(50, currentY, 500, rowHeight).stroke('#CCCCCC');
 
-    doc.text(row[0], col1 + 5, currentY + 7);
-    doc.text(row[1], col2 + 5, currentY + 7);
-    doc.text(row[2], col3 + 5, currentY + 7);
+    doc.text(row[0] ?? '', col1 + 5, currentY + 7);
+    doc.text(row[1] ?? '', col2 + 5, currentY + 7);
+    doc.text(row[2] ?? '', col3 + 5, currentY + 7);
 
     currentY += rowHeight;
   });

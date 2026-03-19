@@ -4,19 +4,17 @@ import path from 'path';
 import { ChartJSNodeCanvas } from 'chartjs-node-canvas';
 import { ChartConfiguration } from 'chart.js';
 
-// Caminho do arquivo final
 const outputDir = path.join(__dirname, 'output');
 const outputPath = path.join(outputDir, 'exemplo-pdfkit.pdf');
 
-// Garante que o diretório de saída exista
 if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
 }
 
 async function generatePdf() {
   const doc = new PDFDocument({
-    size: 'A4',       // tamanho da página
-    margin: 50        // margem padrão
+    size: 'A4',
+    margin: 50
   });
 
   const stream = fs.createWriteStream(outputPath);
@@ -29,10 +27,6 @@ async function generatePdf() {
   });
 
   try {
-    /* =========================================================
-       1. TÍTULO E TEXTO BÁSICO
-    ========================================================= */
-
     doc
       .fontSize(22)
       .fillColor('blue')
@@ -40,7 +34,7 @@ async function generatePdf() {
         align: 'center'
       });
 
-    doc.moveDown(); // pula uma linha
+    doc.moveDown();
 
     doc
       .fontSize(12)
@@ -53,10 +47,6 @@ async function generatePdf() {
       );
 
     doc.moveDown(2);
-
-  /* =========================================================
-     2. POSICIONAMENTO COM X, Y
-  ========================================================= */
 
   doc
     .fontSize(16)
@@ -78,10 +68,6 @@ async function generatePdf() {
 
   doc.moveDown(3);
 
-  /* =========================================================
-     3. FORMATAÇÃO DE TEXTO
-  ========================================================= */
-
   doc
     .fontSize(16)
     .fillColor('darkgreen')
@@ -97,10 +83,6 @@ async function generatePdf() {
 
   doc.moveDown(2);
 
-  /* =========================================================
-     4. RETÂNGULOS, LINHAS E FORMAS
-  ========================================================= */
-
   doc
     .fontSize(16)
     .fillColor('darkgreen')
@@ -110,24 +92,20 @@ async function generatePdf() {
 
   const shapeY = doc.y;
 
-  // Retângulo preenchido
   doc
     .rect(50, shapeY, 120, 50)
     .fill('#DDEEFF');
 
-  // Retângulo apenas borda
   doc
     .rect(200, shapeY, 120, 50)
     .stroke('#000000');
 
-  // Linha
   doc
     .moveTo(350, shapeY)
     .lineTo(500, shapeY + 50)
     .lineWidth(2)
     .stroke('red');
 
-  // Texto explicativo
   doc
     .fillColor('black')
     .fontSize(10)
@@ -146,26 +124,19 @@ async function generatePdf() {
 
   const circleY = doc.y + 20;
 
-  // Círculo preenchido
   doc
     .circle(100, circleY, 30)
     .fill('#FFD699');
 
-  // Círculo com borda
   doc
     .circle(220, circleY, 30)
     .stroke('blue');
 
-  // Elipse
   doc
     .ellipse(360, circleY, 50, 25)
     .fillAndStroke('#CCFFCC', 'green');
 
   doc.moveDown(6);
-
-  /* =========================================================
-     6. LISTA / "TABELA" SIMPLES MANUAL
-  ========================================================= */
 
   doc
     .fontSize(16)
@@ -180,7 +151,6 @@ async function generatePdf() {
   const col3 = 400;
   const rowHeight = 25;
 
-  // Cabeçalho
   doc
     .rect(50, tableTop, 500, rowHeight)
     .fill('#EAEAEA');
@@ -193,7 +163,6 @@ async function generatePdf() {
     .text('Qtd', col2 + 5, tableTop + 7)
     .text('Preço', col3 + 5, tableTop + 7);
 
-  // Linhas
   const data = [
     ['Caneta', '2', 'R$ 5,00'],
     ['Caderno', '1', 'R$ 20,00'],
@@ -205,7 +174,6 @@ async function generatePdf() {
   doc.font('Helvetica');
 
   data.forEach((row, index) => {
-    // desenha borda da linha
     doc.rect(50, currentY, 500, rowHeight).stroke('#CCCCCC');
 
     doc.text(row[0], col1 + 5, currentY + 7);
@@ -216,10 +184,6 @@ async function generatePdf() {
   });
 
   doc.moveDown(8);
-
-  /* =========================================================
-     8. IMAGEM (OPCIONAL)
-  ========================================================= */
 
   const imagePath = path.join(__dirname, 'assets', 'image.jpg');
 
@@ -232,7 +196,7 @@ async function generatePdf() {
 
   if (fs.existsSync(imagePath)) {
     doc.image(imagePath, {
-      fit: [250, 200],   // ajusta dentro dessas dimensões
+      fit: [250, 200],
       align: 'center'
     });
 
@@ -251,10 +215,6 @@ async function generatePdf() {
   }
 
   doc.moveDown(2);
-
-  /* =========================================================
-     9. TEXTO COM LARGURA CONTROLADA
-  ========================================================= */
 
   doc
     .fontSize(16)
@@ -276,7 +236,6 @@ async function generatePdf() {
       }
     );
 
-  // caixa visual ao lado
   const boxY = doc.y - 60;
 
   doc
@@ -290,11 +249,7 @@ async function generatePdf() {
 
   doc.moveDown(6);
 
-  /* =========================================================
-     NOVA PÁGINA (Exemplo de como adicionar uma nova página)
-  ========================================================= */
-
-  doc.addPage(); // <-- Este é o método para adicionar uma nova página!
+  doc.addPage();
 
   doc
     .fontSize(20)
@@ -304,10 +259,6 @@ async function generatePdf() {
     });
 
   doc.moveDown(2);
-
-  /* =========================================================
-     10. GERAÇÃO DE GRÁFICOS SIMPLES (Barra)
-  ========================================================= */
 
   doc
     .fontSize(16)
@@ -330,20 +281,16 @@ async function generatePdf() {
     { label: 'Abr', value: 150 },
   ];
 
-  // Desenha o eixo Y
   doc.moveTo(barChartX, barChartY).lineTo(barChartX, barChartY + chartHeight).stroke('black');
-  // Desenha o eixo X
   doc.moveTo(barChartX, barChartY + chartHeight).lineTo(barChartX + chartWidth, barChartY + chartHeight).stroke('black');
 
-  // Desenha as barras
   dataPoints.forEach((point, index) => {
     const xPos = barChartX + (index * (barWidth + barSpacing)) + barSpacing;
-    const barHeight = (point.value / 150) * chartHeight; // Normaliza o valor para a altura do gráfico
+    const barHeight = (point.value / 150) * chartHeight;
     const yPos = barChartY + chartHeight - barHeight;
 
-    doc.rect(xPos, yPos, barWidth, barHeight).fill('#4CAF50'); // Barra verde
+    doc.rect(xPos, yPos, barWidth, barHeight).fill('#4CAF50');
 
-    // Adiciona rótulo da barra
     doc.fillColor('black').fontSize(10).text(point.label, xPos, barChartY + chartHeight + 5, {
       width: barWidth,
       align: 'center'
@@ -356,10 +303,6 @@ async function generatePdf() {
   });
 
   doc.moveDown(10);
-
-  /* =========================================================
-     11. GRÁFICOS AVANÇADOS (com Chart.js)
-  ========================================================= */
 
   doc
     .fontSize(16)
@@ -378,12 +321,10 @@ async function generatePdf() {
 
   doc.moveDown();
 
-  // Configuração para renderizar o gráfico no Node.js
   const chartWidth_chartjs_radar = 450;
   const chartHeight_chartjs_radar = 400;
   const chartJSNodeCanvasRadar = new ChartJSNodeCanvas({ width: chartWidth_chartjs_radar, height: chartHeight_chartjs_radar });
 
-  // Configuração do gráfico (ex: Gráfico de Radar)
   const radarConfiguration: ChartConfiguration = {
     type: 'radar',
     data: {
@@ -413,11 +354,9 @@ async function generatePdf() {
     },
   };
 
-  // Gera o gráfico como um buffer de imagem (PNG)
     try {
       const radarPngBuffer = await chartJSNodeCanvasRadar.renderToBuffer(radarConfiguration);
 
-      // Adiciona a imagem do gráfico ao PDF (PNG)
       doc.image(radarPngBuffer, {
         fit: [chartWidth_chartjs_radar, chartHeight_chartjs_radar],
         align: 'center'
@@ -434,10 +373,6 @@ async function generatePdf() {
       console.error('Erro ao renderizar o gráfico Radar:', error);
     }
 
-  /* =========================================================
-     NOVA PÁGINA para o próximo gráfico
-  ========================================================= */
-
   doc.addPage();
   doc
     .fontSize(20)
@@ -446,10 +381,6 @@ async function generatePdf() {
       align: 'center'
     });
   doc.moveDown(2);
-
-  /* =========================================================
-     12. GRÁFICO AVANÇADO (Área com Chart.js)
-  ========================================================= */
 
   doc
     .fontSize(16)
@@ -467,18 +398,16 @@ async function generatePdf() {
     );
   doc.moveDown();
 
-  // Define as dimensões para o gráfico de área. Estas variáveis não estavam definidas.
   const chartWidth_chartjs = 450;
   const chartHeight_chartjs = 250;
 
-  // A grande mudança está aqui: passamos 'svg' para o construtor!
   const chartJSNodeCanvasSVG = new ChartJSNodeCanvas({
     width: chartWidth_chartjs,
     height: chartHeight_chartjs
   });
 
   const areaConfiguration: ChartConfiguration<'line'> = {
-    type: 'line', // O tipo 'line' com 'fill: true' cria um gráfico de área
+    type: 'line',
     data: {
       labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho'],
       datasets: [
@@ -488,7 +417,7 @@ async function generatePdf() {
           fill: true,
           backgroundColor: 'rgba(75, 192, 192, 0.2)',
           borderColor: 'rgb(75, 192, 192)',
-          tension: 0.1 // Deixa as linhas um pouco curvas
+          tension: 0.1
         },
         {
           label: 'Despesa',
@@ -509,11 +438,9 @@ async function generatePdf() {
     }
   };
 
-  // Gera o gráfico como um buffer contendo o código SVG
     try {
       const areaPngBuffer = await chartJSNodeCanvasSVG.renderToBuffer(areaConfiguration);
 
-      // Adiciona o gráfico ao PDF (PNG)
       doc.image(areaPngBuffer, {
         fit: [chartWidth_chartjs, chartHeight_chartjs],
         align: 'center'
@@ -527,10 +454,6 @@ async function generatePdf() {
         });
       console.error('Erro ao renderizar o gráfico de Area:', error);
     }
-  /* =========================================================
-     13. RODAPÉ MANUAL
-  ========================================================= */
-
   const pageHeight = doc.page.height;
 
   doc
@@ -546,17 +469,10 @@ async function generatePdf() {
       }
     );
 
-  /* =========================================================
-     FINALIZA O PDF
-  ========================================================= */
-
   } finally {
-    // Finaliza o documento mesmo se ocorrer algum erro durante a renderizacao.
     doc.end();
   }
 
-  // Aguarda a Promise que escuta o evento 'finish' do stream.
-  // Isso garante que o script só continue (e termine) depois que o arquivo for salvo.
   await endPromise;
 }
 
